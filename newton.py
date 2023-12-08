@@ -1,26 +1,29 @@
-import autograd.numpy as np
-from autograd import grad, jacobian
+import numpy as np
+import numdifftools as nd
+from deap import benchmarks
 
 
 def f(x):
     """Function to optimize."""
-    return 100 * (x[1] - x[0]**2)**2 + (1 - x[0])**2
+    return benchmarks.ackley(x)[0]
 
 def gradient(x):
     """Gradient of f."""
-    return grad(f)(x)
+    return nd.Gradient(f)(x)
 
 def hessian(x):
     """Hessian of f."""
-    return jacobian(gradient)(x)
+    return nd.Hessian(f)(x)
 
-def newton(x0, tol=1e-15, maxiter=1000):
+def newton(x0, tol=1e-10, maxiter=1000):
     """Newton's method."""
     x = x0
     for i in range(maxiter):
         x = x - np.linalg.pinv(hessian(x)) @ gradient(x)
         if np.linalg.norm(gradient(x)) < tol:
             break
+    else:
+        print(f'Failed to reach tolerance {tol} in {maxiter} iterations.')
     return x
 
 def main():
