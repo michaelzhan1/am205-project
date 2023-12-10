@@ -1,16 +1,21 @@
 import numpy as np
+from typing import List
+from agent import Agent
 
 class Population:
 
-    def __init__(self, agents):
+    def __init__(self, agents: List[Agent]):
         self.agents = agents
-        self.eval_fitnesses()
+        self.sort_fitness()
+        
+    def sort_fitness(self):
+        self.agents.sort(key=lambda x: x.fitness)
 
-    def eval_fitnesses(self):
-        self.fits = np.asarray([a.calc_fitness() for a in self.agents], dtype=np.float32)
-
+    def get_best(self, n=100):
+        return self.agents[:n]
+    
     def get_mean_fitness(self):
-        return np.mean(self.fits)
+        return np.mean([a.fitness for a in self.agents])
     
     def get_stddev_fitness(self):
-        np.std(self.fits)
+        return np.std([a.fitness for a in self.agents])
