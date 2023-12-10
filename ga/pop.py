@@ -7,7 +7,7 @@ class Population:
         self.eval_fitnesses()
 
     def eval_fitnesses(self):
-        self.fits = np.asarray([a.calcFitness() for a in self.agents], dtype=np.float32)
+        self.fits = np.asarray([a.calc_fitness() for a in self.agents], dtype=np.float32)
 
     def get_mean_fitness(self):
         return np.mean(self.fits)
