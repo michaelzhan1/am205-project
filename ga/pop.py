@@ -4,7 +4,7 @@ class Population:
 
     def __init__(self, agents):
         self.agents = agents
-        eval_fitnesses()
+        self.eval_fitnesses()
 
     def eval_fitnesses(self):
         self.fits = np.asarray([a.calcFitness() for a in self.agents], dtype=np.float32)
