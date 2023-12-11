@@ -3,7 +3,7 @@ import numdifftools as nd
 from deap import benchmarks
 
 
-def newton(x0, f, tol=1e-10, maxiter=1000):
+def newton(f, x0, tol=1e-10, maxiter=1000):
     """Newton's method."""
     def gradient(x):
         return nd.Gradient(f)(x)
@@ -24,7 +24,7 @@ def newton(x0, f, tol=1e-10, maxiter=1000):
 
 def main():
     x0 = np.array([1e-9, 1e-9])
-    x = newton(x0, lambda x: benchmarks.ackley(x)[0])
+    x = newton(lambda x: benchmarks.ackley(x)[0], x0)
     print(x)
 
 
