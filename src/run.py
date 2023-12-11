@@ -11,10 +11,16 @@ def main():
     f = lambda x: benchmarks.bohachevsky(x)[0]
     x0 = np.array([1, 1])
     x_newton = newton(f, x0)
-    x_es = evo_strat(f, 2, children=1000, parents=100, x0=x0)
+    print('Newton done')
+    x_es = evo_strat(f, 2, children=1000, parents=100, x0=x0, max_iter=200, display=False)
+    print('ES done')
     x_es_newton = es_newton(f, 2, children=1000, parents=100, x0=x0, display=False)
-    x_cmaes = cma_evo_strat(f, 2, children=1000, parents=100, x0=x0)
+    print('ES-Newton done')
+    x_cmaes = cma_evo_strat(f, 2, children=1000, parents=100, x0=x0, max_iter=100, display=False)
+    print('CMA-ES done')
     x_cmaes_newton = cmaes_newton(f, 2, children=1000, parents=100, x0=x0, display=False)
+    print('CMA-ES-Newton done')
+    print('-------------------------')
 
     print(f"Newton's method results: {x_newton}")
     print(f"Evolutionary strategy results: {x_es.x}")
