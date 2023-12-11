@@ -1,6 +1,7 @@
 from newton.newton import newton
 from es.es import evo_strat
-from es_newton.hybrid import es_newton 
+from es_newton.hybrid import es_newton
+from cmaes.cmaes import cma_evo_strat
 import numpy as np
 from deap import benchmarks
 
@@ -12,9 +13,11 @@ def main():
     x_es = evo_strat(lambda x: benchmarks.ackley(x)[0], 2, children=1000, parents=100, x0=x0)
 
     x_es_newton = es_newton(lambda x: benchmarks.ackley(x)[0], 2, children=1000, parents=100, x0=x0)
+    x_cmaes = cma_evo_strat(lambda x: benchmarks.ackley(x)[0], 2, children=1000, parents=100, x0=x0)
     print(f"Newton's method results: {x_newton}")
     print(f"Evolutionary strategy results: {x_es}")
     print(f"Newton-ES hybrid results: {x_es_newton}")
+    print(f"CMA-ES results: {x_cmaes}")
     
 
 if __name__ == "__main__":
