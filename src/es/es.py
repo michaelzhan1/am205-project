@@ -2,7 +2,7 @@ import numpy as np
 from typing import Callable
 from .agent import Agent
 from .pop import Population
-
+from .plot_pop import plot_population
 
 def evo_strat(f: Callable, n: int, children: int=1000, parents: int=100, x0=None, tol=1e-10, display=True, max_iter:int = 100):
     """Run genetic algorithm on n-d function f with optional initial guess x0.
@@ -12,6 +12,7 @@ def evo_strat(f: Callable, n: int, children: int=1000, parents: int=100, x0=None
     pop = Population([Agent(x=np.random.normal(x0, np.ones(n)), f=f, id=i) for i in range(children)])
     prev_mean = np.zeros(n)
     for i in range(max_iter):
+        plot_population(f, pop, f'{str(i).zfill(2)}.png')
         new_parents = pop.get_best(parents)
         if i % 5 == 0:
             new_parents = [p for p in new_parents if p.has_valid_hessian()]
