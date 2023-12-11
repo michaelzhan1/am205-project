@@ -1,11 +1,7 @@
-import sys
-
-sys.path.append('./')
-
 import numpy as np
-from agent import Agent
 from typing import Callable
-from pop import Population
+from .agent import Agent
+from .pop import Population
 
 
 def evo_strat(f: Callable, n: int, children: int=1000, parents: int=100, x0=None, tol=1e-10, display=True):
