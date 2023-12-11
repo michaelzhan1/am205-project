@@ -9,7 +9,7 @@ def evo_strat(f: Callable, n: int, children: int=1000, parents: int=100, x0=None
     """
     if x0 is None:
         x0 = np.zeros(n)
-    pop = Population([Agent(x=np.random.normal(x0, np.ones(n) * 2), f=f, id=i) for i in range(children)])
+    pop = Population([Agent(x=np.random.normal(x0, np.ones(n)), f=f, id=i) for i in range(children)])
     prev_mean = np.zeros(n)
     for i in range(max_iter):
         new_parents = pop.get_best(parents)
