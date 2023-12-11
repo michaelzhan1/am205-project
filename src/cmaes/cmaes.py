@@ -6,12 +6,15 @@ from es.pop import Population
 
 
 def cma_evo_strat(f: Callable, n: int, children: int=1000, parents: int=100, x0=None, tol=1e-10, display=True, max_iter=100):
-    alpha_mu = alpha_sigma = alpha_cp = alpha_c1 = alpha_clambda = 0.1
+    alpha_sigma = 2
+    alpha_cp = 1
+    alpha_c1 = alpha_clambda = 0.3
+    alpha_mu = 1
     covar = np.eye(n)
     p_sigma = np.zeros(n)
     sigma = 1
     p_c = np.zeros(n)
-    pop = Population([Agent(x=np.random.multivariate_normal(x0, covar), f=f, id=i) for i in range(children)])
+    pop = Population([Agent(x=np.random.multivariate_normal(x0, sigma ** 2 * covar), f=f, id=i) for i in range(children)])
     prev_mean = np.zeros(n)
     for i in range(max_iter):
         new_parents = pop.get_best(parents)
@@ -24,7 +27,7 @@ def cma_evo_strat(f: Callable, n: int, children: int=1000, parents: int=100, x0=
         p_c = (1 - alpha_cp) * p_c + np.sqrt(alpha_cp * (2 - alpha_cp) * lam) * (mean - prev_mean) / sigma
         sigma = sigma * np.exp(alpha_sigma / 1.1 * (np.linalg.norm(p_sigma) / (np.sqrt(n)*(1-1/(4*n)+1/(21*n**2))) - 1))
         covar = (1 - alpha_clambda - alpha_c1) * covar + alpha_c1*p_c.reshape(-1, 1) @ p_c.reshape(1, -1) + alpha_clambda * np.mean([(p.x - prev_mean).reshape(-1, 1) @ (p.x - prev_mean).reshape(1, -1) for p in new_parents], axis=0) / sigma**2
-        pop = Population(new_parents + [Agent(x=np.random.multivariate_normal(mean, covar), f=f, id=i) for i in range(children - parents)])
+        pop = Population(new_parents + [Agent(x=np.random.multivariate_normal(mean, sigma ** 2 * covar), f=f, id=i) for i in range(children - parents)])
         if display:
             print(f'Generation {i}')
             print(f'\tMean fitness: {pop.get_mean_fitness()}')

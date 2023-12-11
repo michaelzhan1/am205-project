@@ -10,14 +10,14 @@ def main():
     x0 = np.array([1, 1])
     x_newton = newton(lambda x: benchmarks.ackley(x)[0], x0)
 
-    x_es = evo_strat(lambda x: benchmarks.ackley(x)[0], 2, children=1000, parents=100, x0=x0)
+    x_es = evo_strat(lambda x: benchmarks.ackley(x)[0], 2, children=1000, parents=100, x0=x0, display=False)
 
-    x_es_newton = es_newton(lambda x: benchmarks.ackley(x)[0], 2, children=1000, parents=100, x0=x0)
-    x_cmaes = cma_evo_strat(lambda x: benchmarks.ackley(x)[0], 2, children=1000, parents=100, x0=x0)
+    x_es_newton = es_newton(lambda x: benchmarks.ackley(x)[0], 2, children=1000, parents=100, x0=x0, display=False)
+    x_cmaes = cma_evo_strat(lambda x: benchmarks.ackley(x)[0], 2, children=1000, parents=100, x0=x0, display=False)
     print(f"Newton's method results: {x_newton}")
-    print(f"Evolutionary strategy results: {x_es}")
+    print(f"Evolutionary strategy results: {x_es.x}")
     print(f"Newton-ES hybrid results: {x_es_newton}")
-    print(f"CMA-ES results: {x_cmaes}")
+    print(f"CMA-ES results: {x_cmaes.x}")
     
 
 if __name__ == "__main__":
