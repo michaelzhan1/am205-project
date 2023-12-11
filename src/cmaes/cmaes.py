@@ -6,28 +6,31 @@ from es.pop import Population
 
 
 def cma_evo_strat(f: Callable, n: int, children: int=1000, parents: int=100, x0=None, tol=1e-10, display=True, max_iter=100):
-    alpha_sigma = 0.9
-    alpha_cp = 0.9
-    alpha_c1 = alpha_clambda = 0.4
-    alpha_mu = 1
+    c_sigma = 1 / np.sqrt(n)
+    c_c = 1 / np.sqrt(n)
+    c_1 = 2 / n**2
+    c_mu = 1 / n
+
+    mean = x0 if x0 is not None else np.zeros(n)
     covar = np.eye(n)
     p_sigma = np.zeros(n)
-    sigma = 1
     p_c = np.zeros(n)
-    pop = Population([Agent(x=np.random.multivariate_normal(x0, sigma ** 2 * covar), f=f, id=i) for i in range(children)])
+    sigma = 1
     prev_mean = np.zeros(n)
+    pop = Population([Agent(x=np.random.multivariate_normal(mean, sigma ** 2 * covar), f=f, id=i) for i in range(children)])
     for i in range(max_iter):
         new_parents = pop.get_best(parents)
         if i % 5 == 0:
             new_parents = [p for p in new_parents if p.has_valid_hessian()]
         lam = len(new_parents)
-        
-        mean = prev_mean + alpha_mu * np.mean([p.x - prev_mean for p in new_parents], axis=0)
-        p_sigma = (1 - alpha_sigma) * p_sigma + np.sqrt(alpha_sigma * (2 - alpha_sigma) * lam) * scipy.linalg.fractional_matrix_power(covar, -0.5) @ (mean - prev_mean) / sigma
-        p_c = (1 - alpha_cp) * p_c + np.sqrt(alpha_cp * (2 - alpha_cp) * lam) * (mean - prev_mean) / sigma
-        sigma = sigma * np.exp(alpha_sigma / 1.1 * (np.linalg.norm(p_sigma) / (np.sqrt(n)*(1-1/(4*n)+1/(21*n**2))) - 1))
-        covar = (1 - alpha_clambda - alpha_c1) * covar + alpha_c1*p_c.reshape(-1, 1) @ p_c.reshape(1, -1) + alpha_clambda * np.mean([(p.x - prev_mean).reshape(-1, 1) @ (p.x - prev_mean).reshape(1, -1) for p in new_parents], axis=0) / sigma**2
-        pop = Population(new_parents + [Agent(x=np.random.multivariate_normal(mean, sigma ** 2 * covar), f=f, id=i) for i in range(children - parents)])
+        prev_mean = mean
+        mean = np.mean([p.x for p in new_parents], axis=0)
+        p_sigma = (1 - c_sigma) * p_sigma + np.sqrt(1-(1-c_sigma)**2)*np.sqrt(n)*scipy.linalg.fractional_matrix_power(covar, -0.5) @ (mean - prev_mean) / sigma
+        new_sigma = sigma * np.exp(c_sigma * (np.linalg.norm(p_sigma) / (np.sqrt(n)*(1-1/(4*n)+1/(21*n**2))) - 1))
+        p_c = (1 - c_c) + (1 if np.linalg.norm(p_sigma) <= 1.5 * np.sqrt(n) else 0) * (np.sqrt(1-(1-c_c)**2)*np.sqrt(n)*(mean - prev_mean) / sigma)
+        covar = (1 - c_1 - c_mu) * covar + c_1*p_c.reshape(-1, 1) @ p_c.reshape(1, -1) + c_mu * np.mean([(p.x - prev_mean).reshape(-1, 1) @ (p.x - prev_mean).reshape(1, -1) for p in new_parents], axis=0) / sigma**2
+
+        pop = Population(new_parents + [Agent(x=np.random.multivariate_normal(mean, new_sigma ** 2 * covar), f=f, id=i) for i in range(children - parents)])
         if display:
             print(f'Generation {i}')
             print(f'\tMean fitness: {pop.get_mean_fitness()}')
@@ -35,10 +38,10 @@ def cma_evo_strat(f: Callable, n: int, children: int=1000, parents: int=100, x0=
             print()
         if np.linalg.norm(mean - prev_mean) < tol:
             break
-        prev_mean = mean
+        sigma = new_sigma
     else:
         print('FAILED TO HIT THRESHOLD!')
-
+    
     if display:
         print('Final results')
         print(f'\tMean fitness: {pop.get_mean_fitness()}')
