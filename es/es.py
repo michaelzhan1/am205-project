@@ -1,15 +1,20 @@
+import sys
+
+sys.path.append('./')
+
 import numpy as np
 from agent import Agent
 from typing import Callable
 from pop import Population
 
 
-def genetic_algorithm(f: Callable, n: int, children: int=1000, parents: int=100, x0=None):
+def evo_strat(f: Callable, n: int, children: int=1000, parents: int=100, x0=None, tol=1e-10, display=True):
     """Run genetic algorithm on n-d function f with optional initial guess x0.
     """
     if x0 is None:
         x0 = np.zeros(n)
     pop = Population([Agent(x=np.random.normal(x0, np.ones(n) * 2), f=f, id=i) for i in range(children)])
+    prev_mean = np.zeros(n)
     for i in range(100):
         new_parents = pop.get_best(parents)
         if i % 5 == 0:
@@ -18,19 +23,20 @@ def genetic_algorithm(f: Callable, n: int, children: int=1000, parents: int=100,
         mean = np.mean([p.x for p in new_parents], axis=0)
         std = np.std([p.x for p in new_parents], axis=0)
         pop = Population(new_parents + [Agent(x=np.random.normal(mean, std), f=f, id=i) for i in range(children - parents)])
-        print(f'Generation {i}')
+        if display:
+            print(f'Generation {i}')
+            print(f'\tMean fitness: {pop.get_mean_fitness()}')
+            print(f'\tStddev fitness: {pop.get_stddev_fitness()}')
+            print()
+        if np.linalg.norm(mean - prev_mean) < tol:
+            break
+        prev_mean = mean
+    if display:
+        print('Final results')
         print(f'\tMean fitness: {pop.get_mean_fitness()}')
         print(f'\tStddev fitness: {pop.get_stddev_fitness()}')
-        print()
-    print('Final results')
-    print(f'\tMean fitness: {pop.get_mean_fitness()}')
-    print(f'\tStddev fitness: {pop.get_stddev_fitness()}')
-    print(f'\tAverage x value: {np.mean([p.x for p in pop.get_best(parents)], axis=0)}')
+        print(f'\tAverage x value: {np.mean([p.x for p in pop.get_best(parents)], axis=0)}')
 
-def genetic_algorithm_covar(f: Callable, n: int, children: int=100, parents: int=3, x0=None):
-    """Run genetic algorithm on n-d function f with optional initial guess x0. Uses covariance matrix optimization.
-    """
-    pass
 
 if __name__ == "__main__":
-    genetic_algorithm(lambda x: np.sum(x**2), 10, children=1000, parents=100, x0=np.ones(10))
+    evo_strat(lambda x: np.sum(x**2), 10, children=1000, parents=100, x0=np.ones(10))
