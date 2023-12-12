@@ -13,16 +13,17 @@ np.random.seed(1)
 
 def main():
     f = lambda x: benchmarks.rosenbrock(x)[0]
+    name = 'rosenbrock'
     x0 = np.array([1, 1])
     x_newton = newton(f, x0)
     print('Newton done')
-    x_es = evo_strat(f, 2, children=1000, parents=100, x0=x0, max_iter=200, display=False)
+    x_es = evo_strat(f, 2, children=1000, parents=100, x0=x0, max_iter=200, display=False, name=name)
     print('ES done')
-    x_es_newton = es_newton(f, 2, children=1000, parents=100, x0=x0, display=False)
+    x_es_newton = es_newton(f, 2, children=1000, parents=100, x0=x0, display=False, name=name)
     print('ES-Newton done')
-    x_cmaes = cma_evo_strat(f, 2, children=1000, parents=100, x0=x0, max_iter=100, display=False)
+    x_cmaes = cma_evo_strat(f, 2, children=1000, parents=100, x0=x0, max_iter=100, display=False, name=name)
     print('CMA-ES done')
-    x_cmaes_newton = cmaes_newton(f, 2, children=1000, parents=100, x0=x0, display=False)
+    x_cmaes_newton = cmaes_newton(f, 2, children=1000, parents=100, x0=x0, display=False, name=name)
     print('CMA-ES-Newton done')
     x_scipy = scipy.optimize.minimize(f, x0, method='BFGS')
     print('-------------------------')

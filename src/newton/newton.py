@@ -3,7 +3,7 @@ import numdifftools as nd
 from deap import benchmarks
 
 
-def newton(f, x0, tol=1e-10, maxiter=1000):
+def newton(f, x0, tol=1e-10, maxiter=1000, name='undefined'):
     """Newton's method."""
     def gradient(x):
         return nd.Gradient(f)(x)

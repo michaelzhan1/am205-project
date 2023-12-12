@@ -5,7 +5,7 @@ from es.agent import Agent
 from es.pop import Population
 
 
-def cma_evo_strat(f: Callable, n: int, children: int=1000, parents: int=100, x0=None, tol=1e-10, display=True, max_iter=100):
+def cma_evo_strat(f: Callable, n: int, children: int=1000, parents: int=100, x0=None, tol=1e-10, display=True, max_iter=100, name='undefined'):
     alpha_sigma = 0.5
     alpha_cp = 1
     alpha_c1 = alpha_clambda = 0.3
