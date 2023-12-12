@@ -7,11 +7,13 @@ from .plot_pop import plot_population
 def evo_strat(f: Callable, n: int, children: int=1000, parents: int=100, x0=None, tol=1e-10, display=True, max_iter:int = 100):
     """Run genetic algorithm on n-d function f with optional initial guess x0.
     """
+    count = 0
     if x0 is None:
         x0 = np.zeros(n)
     pop = Population([Agent(x=np.random.normal(x0, np.ones(n)), f=f, id=i) for i in range(children)])
     prev_mean = np.zeros(n)
     for i in range(max_iter):
+        count += 1
         # plot_population(f, pop, f'{str(i).zfill(2)}.png')
         new_parents = pop.get_best(parents)
         if i % 5 == 0:
@@ -37,7 +39,7 @@ def evo_strat(f: Callable, n: int, children: int=1000, parents: int=100, x0=None
         print(f'\tStddev fitness: {pop.get_stddev_fitness()}')
         print(f'\tAverage x value: {np.mean([p.x for p in pop.get_best(parents)], axis=0)}')
     
-    return pop.get_best(1)[0]
+    return pop.get_best(1)[0], count
 
 if __name__ == "__main__":
     evo_strat(lambda x: np.sum(x**2), 10, children=1000, parents=100, x0=np.ones(10))

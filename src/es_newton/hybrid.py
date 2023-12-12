@@ -6,6 +6,7 @@ from deap import benchmarks
 
 
 def es_newton(f: Callable, n: int, children: int=1000, parents: int=100, x0=None, tol=1e-12, display=True, max_iter:int = 100):
-    x_es = evo_strat(f, n, children, parents, x0, tol, display, max_iter)
+    x_es, es_count = evo_strat(f, n, children, parents, x0, tol, display, max_iter)
     init_newt = x_es.x
-    return newton(f, init_newt, 1e-14, max_iter)
+    x_newton, newton_count = newton(f, init_newt, 1e-14, max_iter)
+    return x_newton, newton_count + es_count
