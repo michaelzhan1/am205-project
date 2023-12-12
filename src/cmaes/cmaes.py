@@ -3,6 +3,7 @@ from typing import List, Callable
 import scipy
 from es.agent import Agent
 from es.pop import Population
+from es.plot_pop import plot_population
 
 def cma_evo_strat(f: Callable, n: int, children: int=1000, parents: int=100, x0=None, tol=1e-10, display=True, max_iter=100, name='undefined'):
     count = 0
@@ -17,8 +18,11 @@ def cma_evo_strat(f: Callable, n: int, children: int=1000, parents: int=100, x0=
     sigma = 1
     p_c = np.zeros(n)
     pop = Population([Agent(x=np.random.multivariate_normal(x0, sigma ** 2 * covar), f=f, id=i) for i in range(children)])
+
     prev_mean = np.zeros(n)
     for i in range(max_iter):
+        plot_population(f, pop, f'{str(i).zfill(2)}_cmaes.png', name)
+
         count += 1
         new_parents = pop.get_best(parents)
         if i % 5 == 0:

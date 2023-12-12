@@ -13,7 +13,7 @@ def evo_strat(f: Callable, n: int, children: int=1000, parents: int=100, x0=None
     pop = Population([Agent(x=np.random.normal(x0, np.ones(n)), f=f, id=i) for i in range(children)])
     prev_mean = np.zeros(n)
     for i in range(max_iter):
-        plot_population(f, pop, f'{str(i).zfill(2)}.png', name)
+        plot_population(f, pop, f'{str(i).zfill(2)}_es.png', name)
         count += 1
         new_parents = pop.get_best(parents)
         if i % 5 == 0:

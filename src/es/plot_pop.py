@@ -48,7 +48,8 @@ def plot_population(f: Callable, pop: Population, fig_title: str = 'Untitled', n
         Y = np.arange(-20, 20, 0.1)
         X, Y = np.meshgrid(X,Y)
         Z = X**2 + 1e6 * Y**2
-
+    else:
+        raise Exception(f'function {name} not defined!')
     ax.contourf(X, Y, Z)
 
     for agent in pop.agents:
