@@ -5,7 +5,7 @@ from es.agent import Agent
 from es.pop import Population
 from es.plot_pop import plot_population
 
-def cma_evo_strat(f: Callable, n: int, children: int=1000, parents: int=100, x0=None, tol=1e-10, display=True, max_iter=100, name='undefined'):
+def cma_evo_strat(f: Callable, n: int, children: int=1000, parents: int=100, x0=None, tol=1e-10, display=True, max_iter=100, name='undefined', plot=False):
     count = 0
     if x0 is None:
         x0 = np.zeros(n)
@@ -21,7 +21,8 @@ def cma_evo_strat(f: Callable, n: int, children: int=1000, parents: int=100, x0=
 
     prev_mean = np.zeros(n)
     for i in range(max_iter):
-        plot_population(f, pop, f'{str(i).zfill(2)}_cmaes.png', name)
+        if plot:
+            plot_population(f, pop, f'{str(i).zfill(2)}_cmaes.png', name)
 
         count += 1
         new_parents = pop.get_best(parents)
