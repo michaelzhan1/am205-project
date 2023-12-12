@@ -7,8 +7,11 @@ import numpy as np
 from deap import benchmarks
 
 
+np.random.seed(1)
+
+
 def main():
-    f = lambda x: benchmarks.bohachevsky(x)[0]
+    f = lambda x: benchmarks.rosenbrock(x)[0]
     x0 = np.array([1, 1])
     x_newton = newton(f, x0)
     print('Newton done')
