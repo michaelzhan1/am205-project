@@ -29,7 +29,7 @@ def main():
     print('CMA-ES-Newton done')
     x_scipy = scipy.optimize.minimize(f, x0, method='BFGS', tol=1e-12)
     print('Scipy done')
-    print('-----------------------------------------------------------------------------')
+    print('------------------------------------------------------------------------------------')
 
     method_names = ['Newton', 'ES', 'ES-Newton', 'CMA-ES', 'CMA-ES-Newton', 'Scipy']
     x_values = list(map(list, [x_newton, x_es.x, x_es_newton, x_cmaes.x, x_cmaes_newton, x_scipy.x]))
