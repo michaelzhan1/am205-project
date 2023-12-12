@@ -19,7 +19,8 @@ def newton(f, x0, tol=1e-10, maxiter=1000, name='undefined', plot=False):
     x = x0
     prev = x0
     for i in range(maxiter):
-        plot_points(f, x, f'{str(i).zfill(2)}_newton.png')
+        if plot:
+            plot_points(f, x, f'{str(i).zfill(2)}_newton.png')
         count += 1
         x = x - np.linalg.pinv(hessian(x)) @ gradient(x)
         if np.linalg.norm(x - prev) < tol:

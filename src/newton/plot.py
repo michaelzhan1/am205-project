@@ -17,6 +17,7 @@ def initialize_plot(f):
 
 
 def plot_points(f, x, fig_title):
+    global X, Y, Z
     ax.clear()
     ax.contourf(X, Y, Z)
     all_x.append(x[0])
