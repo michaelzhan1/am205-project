@@ -4,8 +4,10 @@ import scipy
 from es.agent import Agent
 from es.pop import Population
 
-
 def cma_evo_strat(f: Callable, n: int, children: int=1000, parents: int=100, x0=None, tol=1e-10, display=True, max_iter=100, name='undefined'):
+    count = 0
+    if x0 is None:
+        x0 = np.zeros(n)
     alpha_sigma = 0.5
     alpha_cp = 1
     alpha_c1 = alpha_clambda = 0.3
@@ -17,6 +19,7 @@ def cma_evo_strat(f: Callable, n: int, children: int=1000, parents: int=100, x0=
     pop = Population([Agent(x=np.random.multivariate_normal(x0, sigma ** 2 * covar), f=f, id=i) for i in range(children)])
     prev_mean = np.zeros(n)
     for i in range(max_iter):
+        count += 1
         new_parents = pop.get_best(parents)
         if i % 5 == 0:
             new_parents = [p for p in new_parents if p.has_valid_hessian()]
@@ -44,4 +47,5 @@ def cma_evo_strat(f: Callable, n: int, children: int=1000, parents: int=100, x0=
         print(f'\tMean fitness: {pop.get_mean_fitness()}')
         print(f'\tStddev fitness: {pop.get_stddev_fitness()}')
         print(f'\tAverage x value: {np.mean([p.x for p in pop.get_best(parents)], axis=0)}')
-    return pop.get_best(1)[0]
+    return pop.get_best(1)[0], count
+
