@@ -4,8 +4,7 @@ import scipy
 from es.agent import Agent
 from es.pop import Population
 
-
-def cma_evo_strat(f: Callable, n: int, children: int=1000, parents: int=100, x0=None, tol=1e-10, display=True, max_iter=100):
+def cma_evo_strat(f: Callable, n: int, children: int=1000, parents: int=100, x0=None, tol=1e-10, display=True, max_iter=100, name='undefined'):
     count = 0
     if x0 is None:
         x0 = np.zeros(n)
@@ -49,3 +48,4 @@ def cma_evo_strat(f: Callable, n: int, children: int=1000, parents: int=100, x0=
         print(f'\tStddev fitness: {pop.get_stddev_fitness()}')
         print(f'\tAverage x value: {np.mean([p.x for p in pop.get_best(parents)], axis=0)}')
     return pop.get_best(1)[0], count
+
